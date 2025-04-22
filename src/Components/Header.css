@@ -1,0 +1,67 @@
+/* Import a modern and thin font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
+
+/* General Header Styles */
+.nike-header {
+  display: flex;
+  justify-content: center; /* Centering the content */
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #222; /* Dark background for a modern look */
+  color: #fff;
+  position: relative;
+  top: 0;
+  z-index: 1000;
+  font-family: 'Poppins', sans-serif; /* Applying modern font */
+}
+
+/* Navigation Styles */
+.nike-header__nav ul {
+  list-style-type: none;
+  display: flex;
+  gap: 40px; /* Increased gap between menu items */
+  margin: 0;
+  padding: 0;
+}
+
+.nike-header__nav li {
+  font-size: 18px; /* Larger font size for better readability */
+}
+
+.nike-header__nav a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 300; /* Thin font weight */
+  transition: all 0.3s ease-in-out; /* Smooth transition for all properties */
+  text-transform: uppercase; /* Make links uppercase for a professional look */
+}
+
+/* Hover Effect */
+.nike-header__nav a:hover {
+  color: #f5a623; /* Change color on hover */
+  font-weight: 600; /* Make it bold when hovered */
+  transform: scale(1.1); /* Slightly enlarge the link for effect */
+}
+
+/* Actions (Search and Cart) */
+.nike-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+  .nike-header__nav ul {
+    display: none;
+  }
+
+  .nike-header__actions {
+    gap: 15px;
+  }
+
+  /* Add a hamburger menu here if you want for mobile */
+  .nike-header__nav-mobile {
+    display: block;
+  }
+}
