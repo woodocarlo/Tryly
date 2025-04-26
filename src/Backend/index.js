@@ -3,6 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer'); // for handling image uploads
 const path = require('path');
+const axios = require('axios');
+const FormData = require('form-data');
+const fs = require('fs');
 const app = express();
 const port = 5000;
 
@@ -20,10 +23,24 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// API endpoint to upload the captured image
-app.post('/upload', upload.single('image'), (req, res) => {
+// API endpoint to upload the captured image and forward to Python API
+app.post('/upload', upload.single('image'), async (req, res) => {
   if (req.file) {
-    res.json({ message: 'File uploaded successfully', filePath: `/uploads/${req.file.filename}` });
+    try {
+      const form = new FormData();
+      form.append('image', fs.createReadStream(req.file.path));
+
+      const response = await axios.post('http://localhost:6000/analyze', form, {
+        headers: form.getHeaders(),
+      });
+
+      // Delete the uploaded file after forwarding
+      fs.unlinkSync(req.file.path);
+
+      res.json(response.data);
+    } catch (error) {
+      res.status(500).json({ error: 'Error processing image' });
+    }
   } else {
     res.status(400).json({ message: 'No file uploaded' });
   }

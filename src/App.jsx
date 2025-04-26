@@ -7,11 +7,11 @@ import ProductPage from './Pages/ProductPage';
 import LoginPage from './Pages/LoginPage';
 import Cart from './Pages/Cart';
 import Skin from './Pages/Skin';
+import ShopBySkinTone from './Pages/ShopBySkinTone';
 
 function App() {
   return (
     <Router>
-   
       <div>
         <Routes>  {/* Replacing Switch with Routes in v6+ */}
           <Route path="/home" element={<Home />} />
@@ -22,6 +22,7 @@ function App() {
           <Route path="/Login" element={<LoginPage />} />
           <Route path="/Cart" element={<Cart />} />
           <Route path="/Skin" element={<Skin />} />
+          <Route path="/shop-by-skintone" element={<ShopBySkinTone />} />
         </Routes>
       </div>
     </Router>
