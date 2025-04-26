@@ -100,29 +100,27 @@ const ShopBySkinTone = () => {
   const proceedToUpload = async () => {
     if (canvasRef.current) {
       try {
-        // Convert canvas to blob
         const dataUrl = canvasRef.current.toDataURL('image/jpeg');
         const response = await fetch(dataUrl);
         const blob = await response.blob();
         const formData = new FormData();
         formData.append('image', blob, 'captured_image.jpg');
 
-        // Send image to Flask backend
         const predictResponse = await fetch('http://localhost:5000/predict', {
           method: 'POST',
           body: formData,
         });
 
         if (!predictResponse.ok) {
-          throw new Error('Failed to get prediction from server');
+          throw new Error(`Server responded with status ${predictResponse.status}`);
         }
 
         const result = await predictResponse.json();
         setPredictionResult(result);
-        setCurrentStep(3); // Stay on step 3 to show results
+        setCurrentStep(3);
       } catch (err) {
         console.error("Error uploading image:", err);
-        alert("Failed to process image. Please try again.");
+        alert("Failed to connect to the server. Please ensure the Flask server is running on http://localhost:5000 and try again.");
       }
     } else {
       alert("No image captured.");
@@ -159,7 +157,7 @@ const ShopBySkinTone = () => {
             <div className={`step ${currentStep >= 1 ? 'active' : ''}`}>
               <div className="step-number">1</div>
               <div className="step-content">
-                <h3>Click a photo of your face: </h3>
+                <h3>Click a photo of your face</h3>
                 <p>Make sure the face is completely in frame and proper lighting is there</p>
               </div>
             </div>
@@ -177,14 +175,20 @@ const ShopBySkinTone = () => {
                 <p>Our system will analyze your skin tone</p>
                 {predictionResult && (
                   <div className="prediction-result">
-                    <p><strong>Predicted Skin Tone:</strong> {predictionResult.skin_tone}</p>
-                    <p><strong>Dominant Color (BGR):</strong> {predictionResult.dominant_color.join(', ')}</p>
-                    <p><strong>Recommended Colors (RGB):</strong></p>
-                    <ul>
-                      {predictionResult.recommended_colors.map((color, index) => (
-                        <li key={index}>{color.join(', ')}</li>
-                      ))}
-                    </ul>
+                    {predictionResult.result.error ? (
+                      <p><strong>Error:</strong> {predictionResult.result.error}</p>
+                    ) : (
+                      <>
+                        <p><strong>Predicted Skin Tone:</strong> {predictionResult.result.skin_tone}</p>
+                        <p><strong>Dominant Color (BGR):</strong> {predictionResult.result.dominant_color?.join(', ')}</p>
+                        <p><strong>Recommended Colors (RGB):</strong></p>
+                        <ul>
+                          {predictionResult.result.recommended_colors?.map((color, index) => (
+                            <li key={index}>{color.join(', ')}</li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
                   </div>
                 )}
               </div>

@@ -63,21 +63,18 @@
   }
   
   .step-content {
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
+    flex-grow: 1;
   }
   
   .step-content h3 {
-    margin: 0;
-    font-size: 1.2rem;
-    display: inline;
+    margin: 0 0 8px 0;
+    font-size: 18px;
   }
   
   .step-content p {
-    margin: 0 0 0 5px;
+    margin: 0 0 15px 0;
     font-size: 1rem;
-    display: inline;
+    color: #666;
   }
   
   .prediction-result {
@@ -150,4 +147,67 @@
     padding: 0 20px;
     gap: 40px;
     flex-wrap: wrap;
+  }
+  
+  /* Button styles */
+  .action-button {
+    padding: 10px 20px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  
+  .action-button:hover {
+    background-color: #ff5252;
+  }
+  
+  .capture-button {
+    padding: 10px 20px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .capture-button:hover {
+    background-color: #ff5252;
+  }
+  
+  .stop-button {
+    padding: 10px 20px;
+    background-color: #666;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  
+  .stop-button:hover {
+    background-color: #555;
+  }
+  
+  .retake-button {
+    padding: 10px 20px;
+    background-color: #666;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .retake-button:hover {
+    background-color: #555;
   }

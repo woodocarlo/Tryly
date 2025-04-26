@@ -12,9 +12,8 @@ import sys
 from io import StringIO
 
 app = Flask(__name__)
-CORS(app)  # Allow CORS for React frontend
+CORS(app)
 
-# Load the trained model
 model = load_model('model.h5')
 classes = ['Fair_Light', 'Medium_Tan', 'Dark_Deep']
 descriptive_labels = {
@@ -24,7 +23,6 @@ descriptive_labels = {
 }
 mtcnn = MTCNN()
 
-# Load dataset
 def load_dataset(file_path):
     dataset = []
     with open(file_path, mode="r") as file:
@@ -85,7 +83,7 @@ def predict_skin_tone(image_path):
             os.makedirs("color_result", exist_ok=True)
             cv2.imwrite(kmeans_path, kmeans_square)
 
-            detected_rgb = kmeans_color[::-1]  # BGR to RGB
+            detected_rgb = kmeans_color[::-1]
             close_tones = find_closest_skin_tones(detected_rgb, threshold=40)
             if close_tones:
                 all_recommendations = set()
