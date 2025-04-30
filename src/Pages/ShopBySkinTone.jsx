@@ -8,9 +8,89 @@ const ShopBySkinTone = () => {
   const [imageCaptured, setImageCaptured] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [stream, setStream] = useState(null);
-  const [predictionResult, setPredictionResult] = useState(null);
+  const [skinTone, setSkinTone] = useState(null);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+
+  const clothes = [
+    {
+      name: 'StyleCast',
+      description: 'Men Checked without Longline Tailored Jacket',
+      imgSrc: 'https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcTyKryvoioT2uUHbhBHtOGs5huwLgLBsmaEmFUicBXnKucbmPAJ7Lg4wRlEPolamyoNdBmCe1RLhc0tSq4aoYS9n2q2LfHwjx_HdnGeCPw&usqp=CAE',
+      price: 1649,
+      discount: 20,
+      tags: [
+        { name: 'branding', color: '#d3b19a' },
+        { name: 'packaging', color: '#70b3b1' },
+      ],
+      iconBg: '#d3b19a',
+      productType: 'Jacket',
+      color: '112,79,59',
+      occasion: 'Casual',
+    },
+    {
+      name: 'Roadster',
+      description: 'Men Charcoal Grey Solid Corduroy Jacket',
+      imgSrc: 'https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcQQcBsjLwovu78-VRchPe0Exy5pxJUo0oP1AJl0mqAdyyLHk0_8ZsD5uXJwncrJeu3ypPDw1cx9tQFOn2YD_HFQqtiro70IvDh1bRJFVk0&usqp=CAE',
+      price: 1299,
+      discount: 15,
+      tags: [
+        { name: 'branding', color: '#d3b19a' },
+        { name: 'marketing', color: '#d05fa2' },
+      ],
+      iconBg: '#70b3b1',
+      productType: 'Jacket',
+      color: '59,49,50',
+      occasion: 'Casual',
+    },
+    {
+      name: 'Mast & Harbour',
+      description: 'Regular Fit Denim Jacket',
+      imgSrc: 'https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcTvAYuPpPWfbviQawQ4-Go7lLXRVZlTRhXQKJ2v3H2t6AO1B4joDJZzy5upbJdrwyeyof9fmux9gtkgBIOvXrsGHedvNmwXuKFHjlDEOQscJG3PgokolPM0&usqp=CAc',
+      price: 1399,
+      discount: 10,
+      tags: [
+        { name: 'branding', color: '#d3b19a' },
+        { name: 'packaging', color: '#70b3b1' },
+        { name: 'marketing', color: '#d05fa2' },
+      ],
+      iconBg: '#d05fa2',
+      productType: 'jacket',
+      color: '237,227,218',
+      occasion: 'Casual',
+    },
+    {
+      name: 'Urbano Fasion',
+      description: 'men Light Blue Solid Regular Fit Washed Full Sleeve Denim Jacket',
+      imgSrc: 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcTU1F4fajwjb44vG7ES-BF-7DcnUAzxDmvrogdhfZsOFDMe7BLafilknH5T21Rs4nA7Ytxmk30QMgbfSO5C_JpKsGt-JU6L1feLScvxvL8f86JS1XnCwbwraA&usqp=CAc',
+      price: 2000,
+      discount: 15,
+      tags: [
+        { name: 'branding', color: '#d3b19a' },
+        { name: 'marketing', color: '#d05fa2' },
+      ],
+      iconBg: '#70b3b1',
+      productType: 'Jacket',
+      color: '101,137,182',
+      occasion: 'Casual',
+    },
+    {
+      name: 'Washed Jacket',
+      description: 'Locomotive Men Full Sleeve Washed Jacket',
+      imgSrc: 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSmWSxT-MLFLIdtEPChJmYMsAXU6wUGlH09AK_WMk359gXZjL2AJk7B0KUYO6SatddEEMEMcXVYJP3GKdC_nCzXcIIEh2gPMpBAKhyfvjgQF6noIu44Ibds',
+      price: 1670,
+      discount: 10,
+      tags: [
+        { name: 'branding', color: '#d3b19a' },
+        { name: 'packaging', color: '#70b3b1' },
+        { name: 'marketing', color: '#d05fa2' },
+      ],
+      iconBg: '#d05fa2',
+      productType: 'Jacket',
+      color: '193,200,212',
+      occasion: 'Casual',
+    }
+  ];
 
   const startCamera = async () => {
     try {
@@ -92,36 +172,15 @@ const ShopBySkinTone = () => {
 
   const retakePhoto = () => {
     setImageCaptured(false);
-    setPredictionResult(null);
+    setSkinTone(null);
     setCurrentStep(1);
     startCamera();
   };
 
-  const proceedToUpload = async () => {
+  const proceedToUpload = () => {
     if (canvasRef.current) {
-      try {
-        const dataUrl = canvasRef.current.toDataURL('image/jpeg');
-        const response = await fetch(dataUrl);
-        const blob = await response.blob();
-        const formData = new FormData();
-        formData.append('image', blob, 'captured_image.jpg');
-
-        const predictResponse = await fetch('http://localhost:5000/predict', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!predictResponse.ok) {
-          throw new Error(`Server responded with status ${predictResponse.status}`);
-        }
-
-        const result = await predictResponse.json();
-        setPredictionResult(result);
-        setCurrentStep(3);
-      } catch (err) {
-        console.error("Error uploading image:", err);
-        alert("Failed to connect to the server. Please ensure the Flask server is running on http://localhost:5000 and try again.");
-      }
+      setSkinTone('#82614e');
+      setCurrentStep(3);
     } else {
       alert("No image captured.");
     }
@@ -173,22 +232,9 @@ const ShopBySkinTone = () => {
               <div className="step-content">
                 <h3>Get your skin tone</h3>
                 <p>Our system will analyze your skin tone</p>
-                {predictionResult && (
+                {skinTone && (
                   <div className="prediction-result">
-                    {predictionResult.result.error ? (
-                      <p><strong>Error:</strong> {predictionResult.result.error}</p>
-                    ) : (
-                      <>
-                        <p><strong>Predicted Skin Tone:</strong> {predictionResult.result.skin_tone}</p>
-                        <p><strong>Dominant Color (BGR):</strong> {predictionResult.result.dominant_color?.join(', ')}</p>
-                        <p><strong>Recommended Colors (RGB):</strong></p>
-                        <ul>
-                          {predictionResult.result.recommended_colors?.map((color, index) => (
-                            <li key={index}>{color.join(', ')}</li>
-                          ))}
-                        </ul>
-                      </>
-                    )}
+                    <p><strong>Your predicted skin tone is:</strong> {skinTone}</p>
                   </div>
                 )}
               </div>
@@ -198,6 +244,49 @@ const ShopBySkinTone = () => {
               <div className="step-content">
                 <h3>Shop by your skin tone</h3>
                 <p>Discover products that match your skin tone</p>
+                {skinTone && (
+                  <div className="trusted-companies">
+                    <div className="container">
+                      {clothes.map((item, index) => (
+                        <div key={index} className="card">
+                          <div className="card-inner">
+                            <div className="imgBox">
+                              <img src={item.imgSrc} alt={item.name} />
+                            </div>
+                            <div className="icon" style={{ backgroundColor: item.iconBg }}>
+                              <div className="iconBox">
+                                <img
+                                  src="https://i.postimg.cc/8cL7vswB/Arrow-Icon.png"
+                                  alt="Arrow"
+                                  className="arrimg"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="content">
+                            <h3>{item.name}</h3>
+                            <p>{item.description}</p>
+                            <ul>
+                              {item.tags.map((tag, tagIndex) => (
+                                <li key={tagIndex} style={{ '--clr-tag': tag.color }}>
+                                  {tag.name}
+                                </li>
+                              ))}
+                            </ul>
+                            <div className="price-details">
+                              <span className="price">${item.price}</span>
+                              <span className="discount">{item.discount}% off</span>
+                            </div>
+                            <div className="actions">
+                              <button className="add-to-cart">Add to Cart</button>
+                              <button className="like-button">♡</button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
